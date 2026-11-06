@@ -214,6 +214,21 @@ Harap pahami seluruh batasan dan risiko keamanan sebelum mengimplementasikan mod
   - Terapkan kode unik 3 digit acak di digit akhir (contoh: Rp 10.124, Rp 10.582).
   - Atau gunakan jendela pengecekan waktu yang sangat ketat (hanya mencocokkan transaksi yang terjadi setelah invoice dibuat).
 
+### 5. Pitfall Kritis: Error 401 "Session is revoked" pada Akun Kasir Baru
+- **Gejala Masalah**:
+  Saat melakukan login akun Kasir via API / CLI (Request OTP ➔ Submit OTP), penukaran token berhasil dan mendapatkan `access_token`. Namun ketika memanggil endpoint mutasi transaksi atau profil merchant, server mengembalikan error:
+  ```json
+  HTTP 401: { "message": "Session is revoked" }
+  ```
+- **Penyebab**:
+  Di sistem backend Gojek/GoBiz, akun pegawai / sub-user yang baru ditambahkan oleh Owner berstatus belum diinisialisasi (`have_password: true`, `expired: true`). Gateway otentikasi GoBiz secara ketat memblokir akses Web Dashboard API untuk sub-user yang belum pernah melakukan registrasi sesi awal melalui aplikasi mobile resmi.
+- **Solusi & Langkah Aktivasi Wajib**:
+  1. Pasang dan buka aplikasi resmi **GoPay Merchant** di perangkat Android/iOS (bisa di HP kasir atau via dual apps).
+  2. Login satu kali menggunakan nomor HP Kasir tersebut.
+  3. Masukkan kode OTP SMS dan selesaikan verifikasi profil/biometrik hingga **Dashboard Kasir berhasil terbuka di aplikasi mobile**.
+  4. Begitu aplikasi mobile berhasil dibuka sekali, status kredensial kasir di database GoBiz resmi menjadi aktif (`approved: true`).
+  5. Setelah aktivasi HP selesai, ulangi proses login / request OTP melalui CLI SDK ini (`node cli.js`). Token API tidak akan berstatus *revoked* lagi dan langsung bisa membaca mutasi secara normal.
+
 ---
 
 ## 📜 Disclaimer & Lisensi
