@@ -1,0 +1,25 @@
+{
+  "name": "gopay-merchant-scraper",
+  "version": "1.0.0",
+  "description": "Standalone GoPay Merchant / GoBiz Scraper & Dynamic QRIS Generator (0% Fee, Pure Node.js)",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node cli.js",
+    "example": "node example.js",
+    "test": "node test.js"
+  },
+  "keywords": [
+    "gopay",
+    "gobiz",
+    "gopay-merchant",
+    "qris",
+    "dynamic-qris",
+    "payment-gateway"
+  ],
+  "author": "Lynd - Lia-chan",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
